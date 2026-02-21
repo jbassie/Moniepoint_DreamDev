@@ -13,11 +13,11 @@ from .models import MerchantActivity
 class MerchantActivityAdmin(admin.ModelAdmin):
     """
     Admin interface configuration for MerchantActivity model.
-    
+
     Provides a user-friendly interface for viewing and managing merchant activities
     with search, filtering, and list display capabilities.
     """
-    
+
     list_display: list[str] = [
         'event_id',
         'merchant_id',
@@ -31,7 +31,7 @@ class MerchantActivityAdmin(admin.ModelAdmin):
         'merchant_tier'
     ]
     """Fields to display in the admin list view."""
-    
+
     list_filter: list[str] = [
         'product',
         'status',
@@ -40,19 +40,19 @@ class MerchantActivityAdmin(admin.ModelAdmin):
         'region'
     ]
     """Fields available for filtering in the admin interface."""
-    
+
     search_fields: list[str] = [
         'merchant_id',
         'event_id',
         'event_type'
     ]
     """Fields searchable in the admin interface."""
-    
+
     readonly_fields: list[str] = ['event_id']
     """Fields that are read-only in the admin interface."""
-    
+
     date_hierarchy: str = 'event_timestamp'
     """Enable date-based navigation by event timestamp."""
-    
+
     ordering: list[str] = ['-event_timestamp']
     """Default ordering for the list view (newest first)."""

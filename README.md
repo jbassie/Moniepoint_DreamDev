@@ -97,7 +97,7 @@ This is a REST API built with Django that analyzes merchant activity data across
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone <https://github.com/jbassie/Moniepoint_DreamDevl>
 cd Moniepoint_DreamDev/src
 ```
 
@@ -276,11 +276,16 @@ python manage.py test --verbosity=2
 ```
 
 The test suite includes:
-- **TopMerchantView**: Tests for top merchant calculation, status filtering, and decimal precision
-- **MonthlyActiveMerchantsView**: Tests for monthly counts, date formatting, and null timestamp handling
-- **ProductAdoptionView**: Tests for product adoption counts, sorting, and status inclusion
-- **KYCFunnelView**: Tests for KYC funnel stages, unique merchant counting, and event filtering
-- **FailureRatesView**: Tests for failure rate calculations, sorting, and decimal precision
+- **TopMerchantView**
+  - Tests for top merchant calculation, status filtering, and decimal precision
+- **MonthlyActiveMerchantsView**
+  - Tests for monthly counts, date formatting, and null timestamp handling
+- **ProductAdoptionView**
+  - Tests for product adoption counts, sorting, and status inclusion
+- **KYCFunnelView**
+  - Tests for KYC funnel stages, unique merchant counting, and event filtering
+- **FailureRatesView**
+  - Tests for failure rate calculations, sorting, and decimal precision
 
 ### Manual API Testing
 

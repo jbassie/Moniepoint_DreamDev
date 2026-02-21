@@ -9,17 +9,82 @@ This is a REST API built with Django that analyzes merchant activity data across
 
 ## Assumptions
 
+### Configuration & Infrastructure
+
 1. **Database**: PostgreSQL is used as the database. The application expects a PostgreSQL database to be set up and configured via environment variables.
 
-2. **Data Format**: CSV files follow the exact schema specified in the requirements. Some rows may have missing or malformed data (e.g., empty timestamps), which are handled gracefully.
+2. **Port**: The API runs on port 8080 as specified in the requirements.
 
-3. **Port**: The API runs on port 8080 as specified in the requirements.
+3. **Time Zone**: All timestamps are stored and processed in UTC timezone.
 
-4. **Time Zone**: All timestamps are stored and processed in UTC timezone.
+4. **Server Resources**: Database connection settings are optimized for a 2GB RAM server (connection max age: 300 seconds, query timeout: 30 seconds).
 
-5. **Data Import**: CSV files are expected to be in the `candidate_package/candidate_package/data/sample_data/` directory by default, but can be specified via command-line argument.
+### Data Format & Schema
 
-6. **Error Handling**: Malformed CSV rows are skipped with warnings rather than failing the entire import process.
+5. **Merchant ID Format**: Assumes format `MRC-XXXXXX` (documented in models and comments).
+
+6. **CSV File Location**: Defaults to `../data` relative to `src/` or `./data` in project root. Can also be in `candidate_package/candidate_package/data/sample_data/` directory by default, but can be specified via command-line argument.
+
+7. **CSV Encoding**: Assumes UTF-8 encoding.
+
+8. **Missing Data Handling**:
+   - Empty `channel` → defaults to `'UNKNOWN'`
+   - Empty `region` → defaults to `'UNKNOWN'`
+   - Empty `merchant_tier` → defaults to `'STARTER'`
+   - Empty `event_timestamp` → allowed to be `NULL`
+   - Invalid amounts → default to `0.00`
+
+9. **Batch Processing**: Batch size of 5000 records for bulk inserts.
+
+### Business Logic
+
+10. **Top Merchant**: Only considers transactions with `status='SUCCESS'` (excludes FAILED and PENDING).
+
+11. **Monthly Active Merchants**:
+    - Only counts merchants with `status='SUCCESS'`
+    - Excludes records with `NULL` timestamps
+
+12. **Product Adoption**: Counts all events regardless of status (not just successful ones).
+
+13. **KYC Funnel**: Only counts events with `status='SUCCESS'` for each stage.
+
+14. **Failure Rates**:
+    - Excludes `PENDING` transactions from calculation
+    - Formula: `(FAILED / (SUCCESS + FAILED)) × 100`
+    - Products with zero transactions are excluded from results
+
+### Data Import
+
+15. **Transaction Atomicity**: Entire import is wrapped in a transaction (all-or-nothing).
+
+16. **Error Handling**: Malformed CSV rows are skipped with warnings rather than failing the entire import process. First 10 errors are logged to avoid spam.
+
+17. **Duplicate Handling**: Uses `ignore_conflicts=True` for bulk inserts (assumes `event_id` uniqueness).
+
+18. **Data Validation**: Assumes CSV has exact column names matching model fields.
+
+### Product & Domain
+
+19. **Product Types**: Fixed list: `POS`, `AIRTIME`, `BILLS`, `CARD_PAYMENT`, `SAVINGS`, `MONIEBOOK`, `KYC`.
+
+20. **Status Values**: Only three statuses: `SUCCESS`, `FAILED`, `PENDING`.
+
+21. **Merchant Tiers**: Only three tiers: `STARTER`, `VERIFIED`, `PREMIUM`.
+
+22. **Channels**: Fixed list: `POS`, `APP`, `USSD`, `WEB`, `OFFLINE`.
+
+23. **KYC Event Types**: Specific mapping:
+    - `DOCUMENT_SUBMITTED` → documents_submitted
+    - `VERIFICATION_COMPLETED` → verifications_completed
+    - `TIER_UPGRADE` → tier_upgrades
+
+### Precision & Formatting
+
+24. **Monetary Amounts**: 2 decimal places (NGN currency).
+
+25. **Percentages**: 1 decimal place for failure rates.
+
+26. **Date Formatting**: Monthly data formatted as `YYYY-MM` strings.
 
 ## Prerequisites
 
@@ -33,7 +98,7 @@ This is a REST API built with Django that analyzes merchant activity data across
 
 ```bash
 git clone <repository-url>
-cd Moniepoint_DreamDev
+cd Moniepoint_DreamDev/src
 ```
 
 ### 2. Create and Activate Virtual Environment
@@ -65,12 +130,17 @@ CREATE DATABASE moniepoint_db;
 
 2. Create a `.env` file in the project root with your database credentials:
 ```env
-API_database_name=moniepoint_db
-API_database_username=postgres
-API_database_password=your_password
-API_database_host=localhost
-API_database_port=5432
-```
+SECRET_KEY=django-secret-key
+DEBUG=True
+
+# Database Configuration
+# Update these values with your PostgreSQL credentials
+LOCAL_DATABASE_NAME=database_name
+LOCAL_DATABASE_USERNAM=database_username
+LOCAL_DATABASE_PASSWORD=your_password_here
+LOCAL_DATABASE_HOST=database_host
+LOCAL_DATABASE_PORT=port
+
 
 ### 5. Run Database Migrations
 
@@ -80,13 +150,13 @@ python manage.py migrate
 
 ### 6. Import CSV Data
 
-The CSV files should be located in `candidate_package/candidate_package/data/sample_data/` by default.
+The CSV files should be located in `/data/` by default.(The root directory)
 
 To import the data:
 ```bash
 python manage.py loads
 ```
-if the data is not in the data directory please specify a custom data directory:
+if the data is not in the data directory of the projects root directory please specify a custom data directory:
 ```bash
 python manage.py loads --data-dir=path/to/your/data
 ```
@@ -208,7 +278,7 @@ curl http://localhost:8080/analytics/failure-rates
 
 ```
 Moniepoint_DreamDev/
-├── v1/
+├──src/
 │   ├── analytics/
 │   │   ├── models.py          # Database models
 │   │   ├── views.py           # API endpoints
@@ -216,14 +286,14 @@ Moniepoint_DreamDev/
 │   │   └── management/
 │   │       └── commands/
 │   │           └── loads.py  # CSV import command
-│   └── moniepoint/
-│       ├── settings.py        # Django settings
-│       └── urls.py            # URL routing
-├── candidate_package/
-│   └── candidate_package/
-│       └── data/
-│           └── sample_data/   # CSV data files
-├── manage.py                  # Django management script
+│   ├─ moniepoint/
+│   |    ├── settings.py        # Django settings
+│   |    └── urls.py            # URL routing
+    └──manage.py  
+├── data/
+│   └── activities_20240101.csv
+|   └── 2.csv # CSV data files
+                # Django management script
 ├── requirements.txt           # Python dependencies
 └── README.md                  # This file
 ```
@@ -258,9 +328,9 @@ Moniepoint_DreamDev/
 
 ### Port Already in Use
 - Ensure port 8080 is not already in use
-- Use `netstat -ano | findstr :8080` (Windows) or `lsof -i :8080` (Linux/Mac) to check
+
 
 ## License
 
-This project is created for the Moniepoint DreamDev Hackathon 2025.
+This project is created for the Moniepoint DreamDev Hackathon 2026.
 

@@ -272,9 +272,7 @@ python manage.py test analytics.tests.test_views
 # Run tests with verbose output
 python manage.py test --verbosity=2
 
-# Run tests and show coverage (if coverage.py is installed)
-coverage run --source='.' manage.py test analytics
-coverage report
+
 ```
 
 The test suite includes:

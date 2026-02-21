@@ -98,7 +98,6 @@ This is a REST API built with Django that analyzes merchant activity data across
 
 ```bash
 git clone https://github.com/jbassie/Moniepoint_DreamDev
-cd src
 ```
 
 ### 2. Create and Activate Virtual Environment
@@ -145,6 +144,7 @@ LOCAL_DATABASE_PORT=port
 ### 5. Run Database Migrations
 
 ```bash
+cd src
 python manage.py migrate
 ```
 

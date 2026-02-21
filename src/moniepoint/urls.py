@@ -17,7 +17,7 @@ from analytics.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+
     # Analytics API endpoints using Django REST Framework
     path('analytics/top-merchant', TopMerchantView.as_view(), name='top-merchant'),
     path('analytics/monthly-active-merchants', MonthlyActiveMerchantsView.as_view(), name='monthly-active-merchants'),

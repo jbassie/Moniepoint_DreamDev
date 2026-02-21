@@ -289,7 +289,7 @@ Moniepoint_DreamDev/
 │   ├─ moniepoint/
 │   |    ├── settings.py        # Django settings
 │   |    └── urls.py            # URL routing
-    └──manage.py  
+    └──manage.py
 ├── data/
 │   └── activities_20240101.csv
 |   └── 2.csv # CSV data files
@@ -333,4 +333,3 @@ Moniepoint_DreamDev/
 ## License
 
 This project is created for the Moniepoint DreamDev Hackathon 2026.
-

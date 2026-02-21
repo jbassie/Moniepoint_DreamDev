@@ -97,7 +97,7 @@ This is a REST API built with Django that analyzes merchant activity data across
 ### 1. Clone the Repository
 
 ```bash
-git clone <https://github.com/jbassie/Moniepoint_DreamDevl>
+git clone <https://github.com/jbassie/Moniepoint_DreamDev>
 cd Moniepoint_DreamDev/src
 ```
 

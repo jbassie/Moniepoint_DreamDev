@@ -16,6 +16,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from django.db import transaction
 from django.utils.dateparse import parse_datetime
+from django.utils import timezone
 
 from analytics.models import MerchantActivity
 from analytics.constants import BATCH_SIZE
@@ -117,6 +118,11 @@ class Command(BaseCommand):
                 # Process each CSV file
                 for csv_file in csv_files:
                     imported, skipped = self._process_csv_file(csv_file, batch_size)
+                    self.stdout.write(
+                        self.style.SUCCESS(
+                            f"Loading {csv_file.name}"
+                        )
+                    )
                     total_imported += imported
                     total_skipped += skipped
                     self.stdout.write(
@@ -163,7 +169,7 @@ class Command(BaseCommand):
         with open(filepath, 'r', encoding='utf-8') as file:
             reader: csv.DictReader = csv.DictReader(file)
             
-            # Validate required columns
+            # Validate required columns manually, another way to do this would be to call the models directly
             required_columns: List[str] = [
                 'event_id', 'merchant_id', 'event_timestamp', 'product',
                 'event_type', 'amount', 'status', 'channel', 'region', 'merchant_tier'
@@ -243,8 +249,14 @@ class Command(BaseCommand):
             event_timestamp: Optional[datetime] = None
             timestamp_str: str = row['event_timestamp'].strip()
             if timestamp_str:
-                event_timestamp = parse_datetime(timestamp_str)
-                # If parsing fails, set to None (field allows null)
+                parsed_dt = parse_datetime(timestamp_str)
+                if parsed_dt:
+                    # Make timezone-aware if it's naive (required when USE_TZ=True)
+                    if timezone.is_naive(parsed_dt):
+                        event_timestamp = timezone.make_aware(parsed_dt)
+                    else:
+                        event_timestamp = parsed_dt
+                # If parsing fails, event_timestamp remains None (field allows null)
             
             # Clean and validate product
             clean_product: str = str(row['product']).strip().upper()

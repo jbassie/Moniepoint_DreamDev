@@ -7,15 +7,21 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 
 from django.contrib import admin
 from django.urls import path
-from analytics import views
+from analytics.views import (
+    TopMerchantView,
+    MonthlyActiveMerchantsView,
+    ProductAdoptionView,
+    KYCFunnelView,
+    FailureRatesView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    # Analytics API endpoints
-    path('analytics/top-merchant', views.top_merchant, name='top-merchant'),
-    path('analytics/monthly-active-merchants', views.monthly_active_merchants, name='monthly-active-merchants'),
-    path('analytics/product-adoption', views.product_adoption, name='product-adoption'),
-    path('analytics/kyc-funnel', views.kyc_funnel, name='kyc-funnel'),
-    path('analytics/failure-rates', views.failure_rates, name='failure-rates'),
+    # Analytics API endpoints using Django REST Framework
+    path('analytics/top-merchant', TopMerchantView.as_view(), name='top-merchant'),
+    path('analytics/monthly-active-merchants', MonthlyActiveMerchantsView.as_view(), name='monthly-active-merchants'),
+    path('analytics/product-adoption', ProductAdoptionView.as_view(), name='product-adoption'),
+    path('analytics/kyc-funnel', KYCFunnelView.as_view(), name='kyc-funnel'),
+    path('analytics/failure-rates', FailureRatesView.as_view(), name='failure-rates'),
 ]

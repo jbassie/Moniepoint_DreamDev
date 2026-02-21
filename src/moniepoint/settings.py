@@ -32,11 +32,11 @@ DEBUG: bool = os.getenv('DEBUG', 'True').lower() == 'true'
 
 # Database configuration from environment variables
 # Defaults provided for local development
-API_database_name: str = os.getenv("LOCAL_DATABASE_NAME")
-API_database_password: str = os.getenv("LOCAL_DATABASE_PASSWORD ")
-API_database_host: str = os.getenv("LOCAL_DATABASE_HOST")
-API_database_username: str = os.getenv("LOCAL_DATABASE_USERNAME")
-API_database_port: str = os.getenv("LOCAL_DATABASE_PORT")
+API_database_name: str = os.getenv("API_database_name", "moniepoint")
+API_database_password: str = os.getenv("API_database_password", "")
+API_database_host: str = os.getenv("API_database_host", "localhost")
+API_database_username: str = os.getenv("API_database_username", "postgres")
+API_database_port: str = os.getenv("API_database_port", "5432")
 
 ALLOWED_HOSTS: list[str] = ['*']  # Allow all hosts for hackathon submission
 

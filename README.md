@@ -98,6 +98,7 @@ This is a REST API built with Django that analyzes merchant activity data across
 
 ```bash
 git clone https://github.com/jbassie/Moniepoint_DreamDev
+cd Moniepoint_DreamDev
 ```
 
 ### 2. Create and Activate Virtual Environment
@@ -119,6 +120,8 @@ source venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
+### 3.1 Enter src Directory
+``` cd src ```
 
 ### 4. Set Up PostgreSQL Database
 
@@ -144,7 +147,7 @@ LOCAL_DATABASE_PORT=port
 ### 5. Run Database Migrations
 
 ```bash
-cd src
+
 python manage.py migrate
 ```
 
@@ -175,6 +178,20 @@ python manage.py runserver 8080
 ```
 
 The API will be available at `http://localhost:8080`
+
+## API Documentation
+
+The API includes interactive Swagger/OpenAPI documentation powered by `drf-spectacular`. You can access the documentation at:
+
+- **Swagger UI**: `http://localhost:8080/api/docs/` - Interactive API documentation with try-it-out functionality
+- **ReDoc**: `http://localhost:8080/api/redoc/` - Alternative documentation interface with a clean, readable format
+- **OpenAPI Schema**: `http://localhost:8080/api/schema/` - Raw OpenAPI 3.0 schema in JSON/YAML format
+
+The documentation includes:
+- All available endpoints with request/response schemas
+- Example requests and responses
+- Data models and serializers
+- Interactive testing capabilities (Swagger UI)
 
 ## API Endpoints
 

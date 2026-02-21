@@ -915,4 +915,3 @@ class FailureRatesViewTest(TestCase):
         # POS should not be in results since it has no SUCCESS or FAILED transactions
         products = [item['product'] for item in response.data]
         self.assertNotIn('POS', products)
-

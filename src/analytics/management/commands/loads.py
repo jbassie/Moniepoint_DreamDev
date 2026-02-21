@@ -118,7 +118,7 @@ class Command(BaseCommand):
                     f'\nImport failed! All changes have been rolled back. Error: {str(e)}'
                 )
             )
-            raise CommandError(f'Import process failed: {str(e)}')
+            raise CommandError(f'Import process failed: {str(e)}') from e
     
     def _process_csv_file(self, filepath: Path, batch_size: int) -> tuple[int, int]:
         """
@@ -150,7 +150,7 @@ class Command(BaseCommand):
                 'event_type', 'amount', 'status', 'channel', 'region', 'merchant_tier'
             ]
             
-            fieldnames: Optional[List[str]] = reader.fieldnames
+            fieldnames: Optional[List[str]] = list(reader.fieldnames) if reader.fieldnames else None
             if not fieldnames or not all(col in fieldnames for col in required_columns):
                 missing: List[str] = [col for col in required_columns if col not in (fieldnames or [])]
                 error_msg: str = f'Missing required columns in {filepath.name}: {missing}'

@@ -138,11 +138,11 @@ DEBUG=True
 # Database Configuration
 # Update these values with your PostgreSQL credentials
 LOCAL_DATABASE_NAME=database_name
-LOCAL_DATABASE_USERNAM=database_username
+LOCAL_DATABASE_USERNAME=database_username
 LOCAL_DATABASE_PASSWORD=your_password_here
 LOCAL_DATABASE_HOST=database_host
 LOCAL_DATABASE_PORT=port
-
+```
 
 ### 5. Run Database Migrations
 

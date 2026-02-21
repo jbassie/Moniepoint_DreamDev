@@ -7,7 +7,6 @@ This module defines the database models used to store merchant activity data.
 from django.db import models
 from django.core.validators import MinValueValidator
 from decimal import Decimal
-from typing import Optional
 import uuid
 
 
@@ -96,8 +95,6 @@ class MerchantActivity(models.Model):
         """Meta configuration for the MerchantActivity model."""
         
         db_table = 'merchant_activities'
-        verbose_name = 'Merchant Activity'
-        verbose_name_plural = 'Merchant Activities'
         indexes = [
             models.Index(fields=['merchant_id', 'status']),
             models.Index(fields=['product', 'status']),
@@ -106,29 +103,5 @@ class MerchantActivity(models.Model):
         ]
         ordering = ['-event_timestamp']
     
-    def __str__(self) -> str:
-        """
-        String representation of the MerchantActivity instance.
-        
-        Returns:
-            String representation in format: {merchant_id} - {product} - {status}
-        """
-        return f"{self.merchant_id} - {self.product} - {self.status}"
-    
-    def __repr__(self) -> str:
-        """
-        Developer-friendly string representation.
-        
-        Returns:
-            Detailed string representation of the instance
-        """
-        return (
-            f"MerchantActivity("
-            f"event_id={self.event_id}, "
-            f"merchant_id={self.merchant_id}, "
-            f"product={self.product}, "
-            f"status={self.status}, "
-            f"amount={self.amount}"
-            f")"
-        )
+   
 

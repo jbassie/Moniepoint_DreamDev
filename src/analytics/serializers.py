@@ -13,7 +13,7 @@ from decimal import Decimal
 class TopMerchantSerializer(serializers.Serializer):
     """
     Serializer for top merchant endpoint response.
-    
+
     Fields:
         merchant_id: Merchant identifier (required, string)
         total_volume: Total transaction volume (required, decimal with 2 decimal places)
@@ -30,16 +30,16 @@ class TopMerchantSerializer(serializers.Serializer):
 class MonthlyActiveMerchantsSerializer(serializers.Serializer):
     """
     Serializer for monthly active merchants endpoint response.
-    
+
     Returns a dictionary with month-year keys and merchant counts as values.
     """
     def to_representation(self, instance: Dict[str, int]) -> Dict[str, int]:
         """
         Convert the monthly data dictionary to the response format.
-        
+
         Args:
             instance: Dictionary with month-year keys and merchant counts
-            
+
         Returns:
             Dictionary with validated month-year keys and integer counts
         """
@@ -54,16 +54,16 @@ class MonthlyActiveMerchantsSerializer(serializers.Serializer):
 class ProductAdoptionSerializer(serializers.Serializer):
     """
     Serializer for product adoption endpoint response.
-    
+
     Returns a dictionary with product names as keys and merchant counts as values.
     """
     def to_representation(self, instance: Dict[str, int]) -> Dict[str, int]:
         """
         Convert the product adoption data dictionary to the response format.
-        
+
         Args:
             instance: Dictionary with product names and merchant counts
-            
+
         Returns:
             Dictionary with validated product names and integer counts
         """
@@ -77,7 +77,7 @@ class ProductAdoptionSerializer(serializers.Serializer):
 class KYCFunnelSerializer(serializers.Serializer):
     """
     Serializer for KYC funnel endpoint response.
-    
+
     Fields:
         documents_submitted: Number of merchants who submitted documents (required, integer)
         verifications_completed: Number of merchants who completed verification (required, integer)
@@ -91,7 +91,7 @@ class KYCFunnelSerializer(serializers.Serializer):
 class FailureRateItemSerializer(serializers.Serializer):
     """
     Serializer for a single failure rate item in the failure rates list.
-    
+
     Fields:
         product: Product name (required, string)
         failure_rate: Failure rate percentage (required, decimal with 1 decimal place)
@@ -110,19 +110,18 @@ class FailureRateItemSerializer(serializers.Serializer):
 class FailureRatesSerializer(serializers.Serializer):
     """
     Serializer for failure rates endpoint response.
-    
+
     Returns a list of failure rate items.
     """
     def to_representation(self, instance: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
         Convert the failure rates list to the response format.
-        
+
         Args:
             instance: List of dictionaries with product and failure_rate
-            
+
         Returns:
             List of validated failure rate dictionaries
         """
         serializer = FailureRateItemSerializer(many=True)
         return serializer.to_representation(instance)
-

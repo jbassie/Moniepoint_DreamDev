@@ -58,7 +58,7 @@ class TopMerchantView(APIView):
         """
         start_time = time.time()
         logger.info("TOPMERCHANTVIEW: REQUEST RECEIVED")
-        
+
         try:
             top_merchant_data = (
                 MerchantActivity.objects
@@ -68,7 +68,7 @@ class TopMerchantView(APIView):
                 .order_by('-total_volume')
                 .first()
             )
-            
+
             query_time = time.time() - start_time
             logger.debug(f"TopMerchantView: Query executed in {query_time:.3f}s")
 
@@ -82,7 +82,7 @@ class TopMerchantView(APIView):
                     "merchant_id": top_merchant_data['merchant_id'],
                     "total_volume": total_volume
                 })
-                
+
                 total_time = time.time() - start_time
                 logger.info(
                     f"TOPMERCHANTVIEW: SUCCESS | merchant_id={top_merchant_data['merchant_id']} | "
@@ -127,7 +127,7 @@ class MonthlyActiveMerchantsView(APIView):
         """
         start_time = time.time()
         logger.info("MONTHLYACTIVEMERCHANTSVIEW: REQUEST RECEIVED")
-        
+
         try:
             monthly_data = (
                 MerchantActivity.objects
@@ -149,7 +149,7 @@ class MonthlyActiveMerchantsView(APIView):
                 result[month_str] = item['unique_merchants']
 
             serializer = MonthlyActiveMerchantsSerializer(result)
-            
+
             total_time = time.time() - start_time
             logger.info(
                 f"MONTHLYACTIVEMERCHANTSVIEW: SUCCESS | {len(result)} months returned | "
@@ -188,7 +188,7 @@ class ProductAdoptionView(APIView):
         """
         start_time = time.time()
         logger.info("PRODUCTADOPTIONVIEW: REQUEST RECEIVED")
-        
+
         try:
             product_data = (
                 MerchantActivity.objects
@@ -206,7 +206,7 @@ class ProductAdoptionView(APIView):
                 result[item['product']] = item['unique_merchants']
 
             serializer = ProductAdoptionSerializer(result)
-            
+
             total_time = time.time() - start_time
             logger.info(
                 f"PRODUCTADOPTIONVIEW: SUCCESS | {len(result)} products returned | "
@@ -247,7 +247,7 @@ class KYCFunnelView(APIView):
         """
         start_time = time.time()
         logger.info("KYCFUNNELVIEW: REQUEST RECEIVED")
-        
+
         try:
             # Count unique merchants at each stage (only successful events)
             documents_submitted = (
@@ -294,7 +294,7 @@ class KYCFunnelView(APIView):
                 "verifications_completed": verifications_completed,
                 "tier_upgrades": tier_upgrades
             })
-            
+
             total_time = time.time() - start_time
             logger.info(
                 f"KYCFUNNELVIEW: SUCCESS | documents_submitted={documents_submitted} | "
@@ -335,7 +335,7 @@ class FailureRatesView(APIView):
         """
         start_time = time.time()
         logger.info("FAILURERATESVIEW: REQUEST RECEIVED")
-        
+
         try:
             # Get counts of SUCCESS and FAILED per product (exclude PENDING)
             product_stats = (
@@ -372,7 +372,7 @@ class FailureRatesView(APIView):
             result.sort(key=lambda x: x['failure_rate'], reverse=True)
 
             serializer = FailureRateItemSerializer(result, many=True)
-            
+
             total_time = time.time() - start_time
             logger.info(
                 f"FAILURERATESVIEW: SUCCESS | {len(result)} products with failure rates calculated | "

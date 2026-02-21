@@ -255,7 +255,38 @@ Returns failure rate per product: (FAILED / (SUCCESS + FAILED)) × 100. PENDING 
 
 ## Testing the API
 
-You can test the endpoints using `curl`:
+### Running Automated Tests
+
+The project includes comprehensive unit tests for all API endpoints. To run the test suite:
+
+```bash
+# Run all tests
+python manage.py test
+
+# Run tests for a specific app
+python manage.py test analytics
+
+# Run tests for a specific test file
+python manage.py test analytics.tests.test_views
+
+# Run tests with verbose output
+python manage.py test --verbosity=2
+
+# Run tests and show coverage (if coverage.py is installed)
+coverage run --source='.' manage.py test analytics
+coverage report
+```
+
+The test suite includes:
+- **TopMerchantView**: Tests for top merchant calculation, status filtering, and decimal precision
+- **MonthlyActiveMerchantsView**: Tests for monthly counts, date formatting, and null timestamp handling
+- **ProductAdoptionView**: Tests for product adoption counts, sorting, and status inclusion
+- **KYCFunnelView**: Tests for KYC funnel stages, unique merchant counting, and event filtering
+- **FailureRatesView**: Tests for failure rate calculations, sorting, and decimal precision
+
+### Manual API Testing
+
+You can also test the endpoints manually using `curl`:
 
 ```bash
 # Top Merchant

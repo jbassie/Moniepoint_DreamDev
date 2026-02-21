@@ -239,8 +239,8 @@ class FailureRatesView(APIView):
             .filter(status__in=[STATUS_SUCCESS, STATUS_FAILED])
             .values('product')
             .annotate(
-                success_count=Count('id', filter=Q(status=STATUS_SUCCESS)),
-                failed_count=Count('id', filter=Q(status=STATUS_FAILED))
+                success_count=Count('event_id', filter=Q(status=STATUS_SUCCESS)),
+                failed_count=Count('event_id', filter=Q(status=STATUS_FAILED))
             )
         )
         

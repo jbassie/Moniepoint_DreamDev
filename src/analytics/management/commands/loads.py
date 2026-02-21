@@ -30,6 +30,7 @@ class Command(BaseCommand):
     - Handles malformed rows gracefully
     - Imports data in batches for performance
     - Provides progress feedback
+    - Wraps entire import in a transaction for atomicity (all-or-nothing)
     """
     
     help: str = 'Load merchant activities from CSV files in the specified directory'

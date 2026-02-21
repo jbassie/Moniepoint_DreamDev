@@ -86,8 +86,7 @@ To import the data:
 ```bash
 python manage.py loads
 ```
-
-Or specify a custom data directory:
+if the data is not in the data directory please specify a custom data directory:
 ```bash
 python manage.py loads --data-dir=path/to/your/data
 ```

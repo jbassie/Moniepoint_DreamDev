@@ -13,6 +13,7 @@ from decimal import Decimal
 from datetime import datetime
 
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 from django.db import transaction
 from django.utils.dateparse import parse_datetime
 
@@ -45,8 +46,8 @@ class Command(BaseCommand):
         parser.add_argument(
             '--data-dir',
             type=str,
-            default='./data',
-            help='Directory containing CSV files (default: ./data)'
+            default=None,
+            help='Directory containing CSV files (default: ../data relative to manage.py, or data/ in project root)'
         )
         parser.add_argument(
             '--batch-size',
@@ -66,13 +67,31 @@ class Command(BaseCommand):
         Raises:
             CommandError: If the data directory doesn't exist or is invalid
         """
-        data_dir: str = options['data_dir']
         batch_size: int = options['batch_size']
         
+        # Determine data directory path
+        # If not specified, try common locations relative to manage.py
+        if options['data_dir']:
+            data_dir: str = options['data_dir']
+        else:
+            # Try ../data (parent directory of src/)
+            base_dir: Path = Path(settings.BASE_DIR)
+            # BASE_DIR is src/, so parent is project root
+            default_path: Path = base_dir.parent / 'data'
+            if default_path.exists():
+                data_dir = str(default_path)
+            else:
+                # Fallback to ./data in current directory
+                data_dir = './data'
+        
         # Validate data directory
-        data_path: Path = Path(data_dir)
+        data_path: Path = Path(data_dir).resolve()
         if not data_path.exists():
-            raise CommandError(f'Data directory does not exist: {data_dir}')
+            raise CommandError(
+                f'Data directory does not exist: {data_dir}\n'
+                f'Please specify the correct path using --data-dir option.\n'
+                f'Example: python manage.py loads --data-dir=../data'
+            )
         
         if not data_path.is_dir():
             raise CommandError(f'Path is not a directory: {data_dir}')

@@ -101,8 +101,8 @@ class FailureRateItemSerializer(serializers.Serializer):
         required=True,
         max_digits=5,
         decimal_places=1,
-        min_value=0,
-        max_value=100,
+        min_value=Decimal('0'),
+        max_value=Decimal("100"), #
         coerce_to_string=False
     )
 
